@@ -7,10 +7,10 @@
 > across every workflow see
 > [`docs/ci/workflow-status.md`](../docs/ci/workflow-status.md).
 
-- **Report baseline:** `ebfaf0795`
-- **Workflows analyzed:** 68
+- **Report baseline:** `524863a08`
+- **Workflows analyzed:** 80
 - **Overall score:** **100/100** (grade **A**)
-- **Findings:** 0
+- **Findings:** 3
 
 ---
 
@@ -27,23 +27,31 @@
 
 ## Headline counts
 
-- Non-local action references: **407/407 pinned**
-- Checkout occurrences: **87/87 safe**
-- Non-exempt jobs: **105**
+- Non-local action references: **468/468 pinned**
+- Checkout occurrences: **106/106 safe**
+- Non-exempt jobs: **121**
 - Jobs missing harden-runner as step 0: **0**
 - Jobs without explicit permissions: **0**
+
+## Findings
+
+| Severity | Area | File/job | Finding |
+|---|---|---|---|
+| HIGH | scanner-runtime | osv-scanner-scheduled.yml | latest completed run failure on 2026-10-29 (branch=main, event=push, run #40802757214) |
+| MEDIUM | scanner-runtime | checkov-scan.yml | no qualifying run on main in the query window (gated by checkov.yml); an idle scanner is not coverage |
+| MEDIUM | scanner-runtime | nuclei.yml | no qualifying run on main in the query window; an idle scanner is not coverage |
 
 ## Security-scanner coverage
 
 | Category | Requirement | Status | Evidence |
 |---|---|---|---|
 | Dependencies | required | SATISFIED | npm-audit.yml, osv-scanner-scheduled.yml, osv-scanner.yml, retirejs.yml, .github/dependabot.yml |
-| SAST | required | SATISFIED | bearer.yml, codeql.yml, devskim.yml, semgrep.yml |
+| SAST | required | SATISFIED | bandit.yml, bearer.yml, codeql.yml, devskim.yml, semgrep.yml |
 | Secrets | required | SATISFIED | gitleaks-main.yml, gitleaks.yml |
 | Supply-Chain | required | SATISFIED | ossf-scorecard.yml, sbom.yml |
 | Workflow-Security | required | SATISFIED | zizmor-security.yml |
 | Containers | optional | SATISFIED | container-security.yml, dockle.yml, grype.yml, hadolint.yml |
-| DAST | optional | SATISFIED | nuclei.yml, owasp-zap-scan.yml |
+| DAST | optional | SATISFIED | owasp-zap-scan.yml |
 | IaC | optional | SATISFIED | checkov.yml |
 
 
@@ -60,52 +68,55 @@ causes such as a job list that could not be read or didn't
 name this scanner, or the live time budget running out
 before it could be checked. Runtime status, not static
 configuration — a failed run here may be transient, and it
-does not affect the score._
+does not affect the score; a `NO RUNS` scanner does not
+count as coverage for its category._
 
 | Workflow | Latest | Last run | Recent runs (newest first) | Note |
 |---|---|---|---|---|
-| `bearer.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | — |
-| `checkov.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
-| `codeql.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | — |
-| `container-security.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
-| `devskim.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | — |
-| `dockle.yml` | PASS | 2026-09-22 | PASS PASS PASS PASS PASS | — |
-| `gitleaks-main.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
-| `gitleaks.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS FAIL | — |
-| `grype.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
-| `hadolint.yml` | PASS | 2026-09-22 | PASS PASS PASS PASS PASS | — |
-| `npm-audit.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `bandit.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `bearer.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | — |
+| `checkov-scan.yml` | NO RUNS | — | — | gated by `checkov.yml` (this scanner's own jobs); no qualifying run on `main` in the query window |
+| `checkov.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `codeql.yml` | RUNNING | 2026-10-29 | RUNNING PASS PASS PASS PASS | in flight — previous run PASS |
+| `container-security.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `devskim.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | — |
+| `dockle.yml` | PASS | 2026-10-27 | PASS PASS PASS PASS PASS | — |
+| `gitleaks-main.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `gitleaks.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | — |
+| `grype.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `hadolint.yml` | PASS | 2026-10-27 | PASS PASS PASS PASS PASS | — |
+| `npm-audit.yml` | PASS | 2026-10-28 | PASS PASS PASS FAIL FAIL | gated by `release-gate.yml` (this scanner's own jobs) |
 | `nuclei.yml` | NO RUNS | — | — | no qualifying run on `main` in the query window |
-| `ossf-scorecard.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | — |
-| `osv-scanner-scheduled.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | — |
-| `osv-scanner.yml` | PASS | 2026-09-21 | PASS PASS PASS | — |
-| `owasp-zap-scan.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
-| `retirejs.yml` | PASS | 2026-09-21 | PASS PASS PASS PASS PASS | — |
-| `sbom.yml` | PASS | 2026-09-23 | PASS PASS PASS PASS PASS | — |
-| `semgrep.yml` | PASS | 2026-09-24 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
-| `zizmor-security.yml` | PASS | 2026-09-21 | PASS PASS PASS PASS PASS | — |
+| `ossf-scorecard.yml` | RUNNING | 2026-10-29 | RUNNING PASS PASS PASS PASS | in flight — previous run PASS |
+| `osv-scanner-scheduled.yml` | FAIL | 2026-10-29 | FAIL PASS PASS FAIL PASS | latest run did not pass — see Actions tab |
+| `osv-scanner.yml` | PASS | 2026-10-26 | PASS PASS PASS FAIL PASS | — |
+| `owasp-zap-scan.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `retirejs.yml` | PASS | 2026-10-26 | PASS PASS PASS PASS PASS | — |
+| `sbom.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | — |
+| `semgrep.yml` | PASS | 2026-10-28 | PASS PASS PASS PASS PASS | gated by `release-gate.yml` (this scanner's own jobs) |
+| `zizmor-security.yml` | PASS | 2026-10-26 | PASS PASS PASS PASS PASS | — |
 
 _`NO RUNS` means no qualifying default-branch run was found — absence of evidence, not a healthy scanner._
 
 ## Pre-commit hooks
 
-76 hooks configured in `.pre-commit-config.yaml`.
+81 hooks configured in `.pre-commit-config.yaml`.
 0 hooks use a tag or otherwise non-SHA static revision.
 
 ## Recent CI/CD config changes
 
 | Commit | Date | Author | Subject |
 |---|---|---|---|
-| `ebfaf0795` | 2026-09-25 | LearningCircuit | fix(ci): fix falsifiable no-success assertion; scope UNRESOLVED to what was actually checked |
-| `30990abd8` | 2026-09-24 | LearningCircuit | fix(ci): stale-when-no-success, budget-truncated gate resolution, job-name prefixes |
-| `5d9515f31` | 2026-09-24 | LearningCircuit | fix(ci): resolve gated scanners per job in the CI health report |
-| `11f632b28` | 2026-09-24 | LearningCircuit | fix(ci): make the CI health report's live section trustworthy |
-| `241aa482d` | 2026-09-19 | LearningCircuit | fix(ci): recognize self-repository action references |
-| `d325d3c6a` | 2026-09-07 | LearningCircuit | Validate CI step commands and reusable job structure |
-| `b03f83a55` | 2026-09-07 | LearningCircuit | Reject malformed CI health inputs and bound live scanner queries |
-| `f28ea21ba` | 2026-09-07 | LearningCircuit | Merge remote-tracking branch 'origin/main' into gate-5523-20260907 |
-| `00c92d3bf` | 2026-09-07 | dependabot[bot] | chore(deps): bump zizmorcore/zizmor-action from 0.6.2 to 0.6.3 (#6319) |
-| `2a9f94dfa` | 2026-09-07 | dependabot[bot] | chore(deps): bump actions/checkout from 7.0.0 to 7.0.1 (#6320) |
+| `524863a08` | 2026-10-28 | LearningCircuit | ci: use the hash-locked bootstrap in the fuzz and MCP workflows (#8023) |
+| `468fc09c0` | 2026-10-28 | LearningCircuit | ci: use event commit for dependency PR check routing (#8011) |
+| `641d48a44` | 2026-10-28 | LearningCircuit | ci: verify Checkov analyses and retry processing errors once (#8003) |
+| `a8e6f33f2` | 2026-10-28 | LearningCircuit | ci: run the main pytest step as two passes to stay under runner memory (#7758) |
+| `2fa84027a` | 2026-10-28 | LearningCircuit | ci: stabilize dependency validation and split coupled updates (#8006) |
+| `ee5ab38c5` | 2026-10-27 | LearningCircuit | ci: pin reviewed licenses, not tool versions, so Dependabot bumps pass (#7533) |
+| `2bff44da1` | 2026-10-27 | LearningCircuit | ci: request tests for automated dependency PRs (#7757) |
+| `de191c139` | 2026-10-26 | LearningCircuit | test: isolate security fixture data directories (#7957) |
+| `e3353ce82` | 2026-10-26 | dependabot[bot] | chore(deps): bump the codeql-action group with 3 updates (#7966) |
+| `3a292dd3b` | 2026-10-26 | dependabot[bot] | chore(deps): bump the github-actions group with 4 updates (#7968) |
 
 ---
 
